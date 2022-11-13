@@ -14,6 +14,10 @@ async function createUser({ username, password }) {
     }
 }
 
+async function updateUser() {
+}
+
+
 async function getAllUsers() {
     const { rows } = await client.query(`SELECT id, username FROM users;`)
     return rows;
