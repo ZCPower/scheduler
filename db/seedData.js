@@ -1,5 +1,7 @@
 const { client } = require('./index');
 const { createUser, getAllUsers } = require('./users')
+const { createPatient, getAllPatients, updatePatient, getPatientById } = require('./patients');
+const { createTech } = require('./techs')
 
 async function dropTables() {
     try {
@@ -33,7 +35,8 @@ async function createTables() {
             name varchar(255) UNIQUE NOT NULL,
             "needsRBT" BOOLEAN NOT NULL DEFAULT FALSE,
             tricare BOOLEAN NOT NULL DEFAULT FALSE,
-            "trainOn" BOOLEAN NOT NULL DEFAULT FALSE, 
+            "trainOn" BOOLEAN NOT NULL DEFAULT FALSE,
+            groupable BOOLEAN NOT NULL DEFAULT FALSE, 
             dayoff BOOLEAN NOT NULL DEFAULT FALSE
         );
         CREATE TABLE techs(
@@ -75,6 +78,55 @@ async function createInitialUsers() {
     }
 }
 
+async function createInitialPatients() {
+    try {
+        console.log('Starting to create patients...');
+        const startingPatients = [{
+            name: 'Chung-Chung',
+            needsRBT: true,
+            tricare: false,
+            trainOn: true,
+            groupable: true,
+            dayoff: false
+        }, {
+            name: 'Kieran',
+            needsRBT: false,
+            tricare: true,
+            trainOn: false,
+            groupable: false,
+            dayoff: true
+        }]
+
+        const patients = await Promise.all(startingPatients.map(createPatient))
+        console.log(patients)
+        return patients
+    } catch (error) {
+        throw error
+    }
+}
+
+async function createInitialTechs() {
+    const startingTechs = [{
+        name: 'KaeLee',
+        rbt: true,
+        tricare: true,
+        trainer: true,
+        training: false,
+        dayoff: false
+    },
+    {
+        name: 'Shelby',
+        rbt: true,
+        tricare: true,
+        trainer: true,
+        training: true,
+        dayoff: true
+    }]
+
+    const techs = await Promise.all(startingTechs.map(createTech));
+    console.log(techs);
+    return techs;
+}
 
 
 async function rebuildDB() {
@@ -84,7 +136,10 @@ async function rebuildDB() {
         await dropTables();
         await createTables();
         await createInitialUsers();
-        await getAllUsers();
+        // await getAllUsers();
+        await createInitialPatients();
+        await createInitialTechs();
+        // await getAllPatients();
     } catch (error) {
         throw error
     }
