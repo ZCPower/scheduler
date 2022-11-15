@@ -140,6 +140,7 @@ async function rebuildDB() {
         await createInitialPatients();
         await createInitialTechs();
         // await getAllPatients();
+        // await getPatientById(2)
     } catch (error) {
         throw error
     }

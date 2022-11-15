@@ -27,8 +27,12 @@ async function getAllPatients() {
     return rows
 }
 
-async function getPatientById({ id }) {
-
+async function getPatientById(id) {
+    const { rows: [patient] } = await client.query(`
+    SELECT * FROM patients WHERE id = ${id};
+    `)
+    console.log('in db', patient)
+    return patient
 }
 
 // async function

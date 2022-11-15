@@ -13,6 +13,19 @@ async function createTech({ name, rbt, tricare, trainer, training, dayoff }) {
     }
 }
 
+async function getAllTechs() {
+    try {
+        const { rows } = await client.query(`
+        SELECT * FROM techs;
+        `)
+
+        return rows
+    } catch (error) {
+
+    }
+}
+
 module.exports = {
-    createTech
+    createTech,
+    getAllTechs
 }
