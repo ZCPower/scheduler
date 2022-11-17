@@ -141,6 +141,7 @@ async function rebuildDB() {
         await createInitialTechs();
         // await getAllPatients();
         // await getPatientById(2)
+        await createUser({ username: 'Zach', password: 'Password' })
     } catch (error) {
         throw error
     }

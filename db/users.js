@@ -14,7 +14,29 @@ async function createUser({ username, password }) {
     }
 }
 
-async function updateUser() {
+async function updateUser(id, fields = {}) {
+    // build the set string
+    const setString = Object.keys(fields).map(
+        (key, index) => `"${key}"=$${index + 1}`
+    ).join(', ');
+
+    // return early if this is called without fields
+    if (setString.length === 0) {
+        return;
+    }
+
+    try {
+        const { rows: [user] } = await client.query(`
+        UPDATE users
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;
+    `, Object.values(fields));
+
+        return user;
+    } catch (error) {
+        throw error;
+    }
 }
 
 
@@ -23,7 +45,38 @@ async function getAllUsers() {
     return rows;
 }
 
+async function getUserById(id) {
+    try {
+        const { rows: [user] } = await client.query(`
+        SELECT id, username FROM users
+        WHERE id=${id}
+        ;`)
+
+        return user
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+async function getUserByUsername(username) {
+    try {
+        const { rows: [user] } = await client.query(`
+        SELECT id, username FROM users
+        WHERE username = ${username};
+        `);
+
+        return user
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 module.exports = {
     createUser,
-    getAllUsers
+    getAllUsers,
+    updateUser,
+    getUserById,
+    getUserByUsername
 }

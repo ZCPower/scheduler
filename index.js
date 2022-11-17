@@ -1,26 +1,25 @@
-const PORT = 3000;
-const express = require('express');
-const server = express();
 require('dotenv').config();
 
-const apiRouter = require('./api')
-server.use('/api', apiRouter)
+const { PORT = 3000 } = process.env;
+const express = require('express');
+const server = express();
 
-const morgan = require('morgan')
-server.use(morgan('dev'))
-server.use(express.json())
+const bodyParser = require('body-parser');
+server.use(express.urlencoded({ extended: false }))
+
+server.use(bodyParser.json());
+server.use(express.json());
+
+const morgan = require('morgan');
+server.use(morgan('dev'));
 
 
-server.use((req, res, next) => {
-    console.log('Body log starting');
-    console.log(req.body);
-    console.log('Body log is ending')
-    next()
-})
+const apiRouter = require('./api');
+server.use('/api', apiRouter);
 
 const { client } = require('./db');
 client.connect();
 
 server.listen(PORT, () => {
-    console.log('WE OUT HERE IN THE', PORT)
+    console.log("The server is up on port", PORT);
 });
