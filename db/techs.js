@@ -21,11 +21,25 @@ async function getAllTechs() {
 
         return rows
     } catch (error) {
+        console.error(error)
+    }
+}
 
+async function deleteTech(id) {
+    try {
+        const { rows } = await client.query(`
+    DELETE FROM techs
+    WHERE id = ${id}
+    RETURNING *;
+    `)
+        return rows
+    } catch (error) {
+        console.error(error)
     }
 }
 
 module.exports = {
     createTech,
-    getAllTechs
+    getAllTechs,
+    deleteTech
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const patientRouter = express.Router();
-const { getAllPatients, getPatientById, createPatient } = require('../db/patients')
+const { getAllPatients, getPatientById, createPatient, deletePatient } = require('../db/patients')
 
 patientRouter.use((req, res, next) => {
     console.log('We are in the patient router.')
@@ -32,6 +32,18 @@ patientRouter.post('/', async (req, res, next) => {
         res.send(patient);
     } catch (error) {
 
+    }
+});
+
+patientRouter.delete('/', async (req, res, next) => {
+    console.log(req.body)
+    const { id } = req.body
+
+    try {
+        const patient = await deletePatient(id);
+        res.send(patient)
+    } catch (error) {
+        console.error(error)
     }
 })
 

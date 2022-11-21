@@ -35,11 +35,23 @@ async function getPatientById(id) {
     return patient
 }
 
-// async function
+async function deletePatient(id) {
+    try {
+        const { rows } = await client.query(`
+    DELETE FROM patients
+    WHERE id = ${id}
+    RETURNING *;
+    `)
+        return rows
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 module.exports = {
     createPatient,
     getAllPatients,
     updatePatient,
-    getPatientById
+    getPatientById,
+    deletePatient
 }
